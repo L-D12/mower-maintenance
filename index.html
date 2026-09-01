@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DUCAR保养查询</title>
+</head>
+<body style="margin:0;padding:0;font-family:Microsoft YaHei,Arial,sans-serif;background:#f5f5f5;">
+
+<!-- 品牌头部 -->
+<div style="background:#1a1a2e;padding:20px;text-align:center;">
+    <span style="color:white;font-size:28px;font-weight:bold;letter-spacing:2px;">DUCAR</span>
+    <span style="color:#f4a261;font-size:13px;margin-left:8px;letter-spacing:2px;">大江动力</span>
+    <div style="color:white;font-size:15px;margin-top:8px;">骑乘式割草机保养查询系统</div>
+    <div style="color:#888;font-size:11px;margin-top:3px;">Riding Mower Maintenance</div>
+</div>
+
+<!-- 红色分隔线 -->
+<div style="height:3px;background:#e63946;"></div>
+
+<!-- 输入区域 -->
+<div style="padding:20px;background:white;margin:10px;border-radius:10px;">
+    <p style="font-weight:bold;margin:0 0 10px 0;">请输入累计运行时长：</p>
+    <input type="number" id="hoursInput" placeholder="输入小时数" style="padding:12px;font-size:16px;width:60%;border:2px solid #ddd;border-radius:8px;">
+    <span style="font-size:15px;font-weight:bold;">小时</span>
+    
+    <br><br>
+    
+    <!-- 快捷按钮 -->
+    <div style="margin-bottom:15px;">
+        <span style="font-size:13px;color:#666;">快捷选择：</span>
+        <button type="button" onclick="setAndCalc(25)" style="padding:6px 12px;border:1px solid #ccc;background:white;border-radius:15px;cursor:pointer;font-size:12px;">25h</button>
+        <button type="button" onclick="setAndCalc(50)" style="padding:6px 12px;border:1px solid #ccc;background:white;border-radius:15px;cursor:pointer;font-size:12px;">50h</button>
+        <button type="button" onclick="setAndCalc(100)" style="padding:6px 12px;border:1px solid #ccc;background:white;border-radius:15px;cursor:pointer;font-size:12px;">100h</button>
+        <button type="button" onclick="setAndCalc(150)" style="padding:6px 12px;border:1px solid #ccc;background:white;border-radius:15px;cursor:pointer;font-size:12px;">150h</button>
+        <button type="button" onclick="setAndCalc(200)" style="padding:6px 12px;border:1px solid #ccc;background:white;border-radius:15px;cursor:pointer;font-size:12px;">200h</button>
+    </div>
+    
+    <button type="button" onclick="calculate()" style="width:100%;background:#e63946;color:white;border:none;padding:14px;font-size:17px;font-weight:bold;border-radius:10px;cursor:pointer;">查询保养状态</button>
+</div>
+
+<!-- 结果区域 -->
+<div id="result" style="padding:0 10px;"></div>
+
+<!-- 底部 -->
+<div style="background:#1a1a2e;padding:15px;text-align:center;margin-top:20px;">
+    <div style="color:white;font-size:14px;font-weight:bold;letter-spacing:2px;">DUCAR 大江动力</div>
+    <div style="color:#f4a261;font-size:11px;margin-top:3px;letter-spacing:1px;">POWER YOUR LIFE</div>
+</div>
+
+<script>
+// 快捷按钮：设置数值并计算
+function setAndCalc(value) {
+    document.getElementById('hoursInput').value = value;
+    calculate();
+}
+
+// 查询按钮：计算保养状态
+function calculate() {
+    var input = document.getElementById('hoursInput');
+    var hours = input.value;
+    
+    if (hours === '' || hours === null) {
+        alert('请输入小时数');
+        return;
+    }
+    
+    hours = Number(hours);
+    
+    if (isNaN(hours) || hours < 0) {
+        alert('请输入有效的数字');
+        return;
+    }
+    
+    var result = document.getElementById('result');
+    var html = '';
+    
+    // 汇总卡片
+    html += '<div style="background:white;border-radius:10px;padding:20px;margin:10px;">';
+    html += '<div style="background:#1a1a2e;border-radius:10px;padding:15px;text-align:center;margin-bottom:15px;">';
+    html += '<div style="color:#aaa;font-size:12px;">当前累计运行时长</div>';
+    html += '<div style="color:#f4a261;font-size:32px;font-weight:bold;">' + hours + ' <span style="font-size:14px;color:white;">小时</span></div>';
+    html += '</div>';
+    
+    // 刀片
+    if (hours >= 100) {
+        html += '<div style="background:#fdecea;padding:12px;border-radius:8px;border-left:4px solid #e63946;margin-bottom:8px;">';
+        html += '<strong style="color:#c62835;">刀片：需要立即更换！</strong><br>';
+        html += '<span style="font-size:13px;color:#555;">已超过更换周期，继续使用有安全风险。</span>';
+        html += '</div>';
+    } else if (hours >= 50) {
+        html += '<div style="background:#fff8e1;padding:12px;border-radius:8px;border-left:4px solid #f4a261;margin-bottom:8px;">';
+        html += '<strong style="color:#e65100;">刀片：需要检查</strong><br>';
+        html += '<span style="font-size:13px;color:#555;">距更换还有 ' + (100 - hours) + ' 小时。</span>';
+        html += '</div>';
+    } else {
+        html += '<div style="background:#f1f8e9;padding:12px;border-radius:8px;border-left:4px solid #4caf50;margin-bottom:8px;">';
+        html += '<strong style="color:#2e7d32;">刀片：正常</strong><br>';
+        html += '<span style="font-size:13px;color:#555;">距检查还有 ' + (50 - hours) + ' 小时。</span>';
+        html += '</div>';
+    }
+    
+    // 机油
+    if (hours >= 50) {
+        html += '<div style="background:#fdecea;padding:12px;border-radius:8px;border-left:4px solid #e63946;margin-bottom:8px;">';
+        html += '<strong style="color:#c62835;">机油：需要立即更换！</strong><br>';
+        html += '<span style="font-size:13px;color:#555;">请使用 SAE 30 或 10W-30 四冲程机油。</span>';
+        html += '</div>';
+    } else {
+        html += '<div style="background:#f1f8e9;padding:12px;border-radius:8px;border-left:4px solid #4caf50;margin-bottom:8px;">';
+        html += '<strong style="color:#2e7d32;">机油：正常</strong><br>';
+        html += '<span style="font-size:13px;color:#555;">距更换还有 ' + (50 - hours) + ' 小时。</span>';
+        html += '</div>';
+    }
+    
+    // 空气滤芯
+    if (hours >= 100) {
+        html += '<div style="background:#fdecea;padding:12px;border-radius:8px;border-left:4px solid #e63946;margin-bottom:8px;">';
+        html += '<strong style="color:#c62835;">空气滤芯：需要立即更换！</strong><br>';
+        html += '<span style="font-size:13px;color:#555;">堵塞会导致油耗增加、动力下降。</span>';
+        html += '</div>';
+    } else if (hours >= 25) {
+        html += '<div style="background:#fff8e1;padding:12px;border-radius:8px;border-left:4px solid #f4a261;margin-bottom:8px;">';
+        html += '<strong style="color:#e65100;">空气滤芯：需要清洁检查</strong><br>';
+        html += '<span style="font-size:13px;color:#555;">距更换还有 ' + (100 - hours) + ' 小时。</span>';
+        html += '</div>';
+    } else {
+        html += '<div style="background:#f1f8e9;padding:12px;border-radius:8px;border-left:4px solid #4caf50;margin-bottom:8px;">';
+        html += '<strong style="color:#2e7d32;">空气滤芯：正常</strong>';
+        html += '</div>';
+    }
+    
+    // 传动皮带
+    if (hours >= 200) {
+        html += '<div style="background:#fdecea;padding:12px;border-radius:8px;border-left:4px solid #e63946;margin-bottom:8px;">';
+        html += '<strong style="color:#c62835;">传动皮带：需要立即更换！</strong><br>';
+        html += '<span style="font-size:13px;color:#555;">继续使用可能中途断裂。</span>';
+        html += '</div>';
+    } else {
+        html += '<div style="background:#f1f8e9;padding:12px;border-radius:8px;border-left:4px solid #4caf50;margin-bottom:8px;">';
+        html += '<strong style="color:#2e7d32;">传动皮带：正常</strong><br>';
+        html += '<span style="font-size:13px;color:#555;">距检查还有 ' + (200 - hours) + ' 小时。</span>';
+        html += '</div>';
+    }
+    
+    // 火花塞
+    if (hours >= 200) {
+        html += '<div style="background:#fdecea;padding:12px;border-radius:8px;border-left:4px solid #e63946;margin-bottom:8px;">';
+        html += '<strong style="color:#c62835;">火花塞：需要立即更换！</strong><br>';
+        html += '<span style="font-size:13px;color:#555;">电极磨损会导致启动困难。</span>';
+        html += '</div>';
+    } else {
+        html += '<div style="background:#f1f8e9;padding:12px;border-radius:8px;border-left:4px solid #4caf50;margin-bottom:8px;">';
+        html += '<strong style="color:#2e7d32;">火花塞：正常</strong>';
+        html += '</div>';
+    }
+    
+    // 轮胎
+    if (hours >= 400) {
+        html += '<div style="background:#fdecea;padding:12px;border-radius:8px;border-left:4px solid #e63946;margin-bottom:8px;">';
+        html += '<strong style="color:#c62835;">轮胎：需要立即更换！</strong>';
+        html += '</div>';
+    } else {
+        html += '<div style="background:#f1f8e9;padding:12px;border-radius:8px;border-left:4px solid #4caf50;margin-bottom:8px;">';
+        html += '<strong style="color:#2e7d32;">轮胎：正常</strong>';
+        html += '</div>';
+    }
+    
+    // 电瓶
+    if (hours >= 500) {
+        html += '<div style="background:#fdecea;padding:12px;border-radius:8px;border-left:4px solid #e63946;margin-bottom:8px;">';
+        html += '<strong style="color:#c62835;">电瓶：需要立即更换！</strong>';
+        html += '</div>';
+    } else {
+        html += '<div style="background:#f1f8e9;padding:12px;border-radius:8px;border-left:4px solid #4caf50;margin-bottom:8px;">';
+        html += '<strong style="color:#2e7d32;">电瓶：正常</strong>';
+        html += '</div>';
+    }
+    
+    html += '</div>';
+    
+    result.innerHTML = html;
+    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+
+</body>
+</html>
